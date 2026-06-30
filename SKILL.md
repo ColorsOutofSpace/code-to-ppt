@@ -1,6 +1,6 @@
 ---
 name: code-to-ppt
-description: 帮助用户把想法变成高质量 PowerPoint。当用户提到 PPT、幻灯片、presentation、答辩、汇报、deck、路演、roadmap 时自动触发。
+description: 帮助用户把想法变成高质量 PowerPoint。带认知访谈、独立 Agent 审查、量化评分迭代，去 AI 味设计。当用户提到 PPT、幻灯片、presentation、答辩、汇报、deck、路演、roadmap 时自动触发。
 ---
 
 # code-to-ppt
