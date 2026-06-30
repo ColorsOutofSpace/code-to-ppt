@@ -46,11 +46,15 @@ description: 帮助用户把想法变成高质量 PowerPoint。当用户提到 P
 - **每生成一组后做即时审查**（mini-review）：这一组是否符合视觉方案？叙事是否连贯？
 - 用 Read / look_at 检查效果，必要时迭代
 
-### 阶段 5：全量对抗审查
-- 先读取 `references/05_customization.md`，询问用户是否有自定义审查维度
-- 再读取 `references/03_adversarial_review.md`，按协商后的维度执行评分（0-100）
-- 切换为多个挑剔视角审查，输出量化评分
-- 输出：《审查报告》（评分、问题、优先级、修改建议）
+### 阶段 5：全量对抗审查（独立 Agent 模式）
+1. 读取 `references/05_customization.md`，询问用户是否有自定义审查维度
+2. 依次加载 4 个独立审查角色（每次只加载一个，确保隔离）：
+   - 读取 `references/03a_audience.md` → 只给目标受众看 PPT → 收集报告
+   - 读取 `references/03b_design.md` → 只给挑剔设计师看 PPT → 收集报告
+   - 读取 `references/03c_logic.md` → 只给逻辑审查者看 PPT → 收集报告
+   - 读取 `references/03d_time.md` → 只给时间管理者看 PPT → 收集报告
+3. 读取 `references/03_adversarial_review.md`（评审主席），汇总 4 份独立报告、评分、裁决冲突
+4. 输出：《最终审查报告》（评分、冲突项、High/Medium/Low）
 
 ### 阶段 6：反思迭代
 - 读取 `references/04_reflection_loop.md`
