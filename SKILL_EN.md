@@ -76,7 +76,7 @@ Card accent line semantic mapping:
 - Comparison / prior work / context → Semantic-contrast (gold/orange)
 - Limitations / issues / cost → Semantic-warning (red)
 
-> See `reference.md` Section 2 for detailed methodology and scenario examples.
+> See the "Color Methodology" section below for detailed methodology and scenario examples.
 
 ---
 
@@ -97,7 +97,7 @@ Card accent line semantic mapping:
 #### 4.1 Set Up Infrastructure
 
 1. Define `RGBColor` constants matching the Phase 2 palette
-2. Copy the complete helper functions from `reference.md` Section 1 (`get_img_size`, `tx`, `cd`, `plot_card`, `img_fit`, `band`, `hero`, `ft`, `st`, `sT`, `cn`, `section_divider`, etc.)
+2. In the generated python-pptx script, **implement helper functions yourself** as needed (`tx`, `cd`, `plot_card`, `img_fit`, `band`, `hero`, `ft`, `st`, `sT`, etc.)
 3. Set image path `FIG` and output path `OUT`
 4. Update the institution name in `ft()` with the value from Phase 1
 
@@ -135,7 +135,7 @@ Example — two-card slide vertical budget:
 
 **Actual rendered lines** = Σ ceil(eq_chars_in_logical_line / chars_per_line), where logical lines = `text.split('\n')`
 
-> See `reference.md` Section 6 for detailed formulas and lookup tables.
+> See the "Line Count Estimation" section below for detailed formulas and lookup tables.
 
 **Step C: Required cd() Height**
 
@@ -226,7 +226,7 @@ Report only problems found. Say "no problems" if clean.
 
 ## 4. Infrastructure: Helper Function Reference
 
-> Full code in `reference.md` Section 1. Quick reference below.
+> Quick reference below (LLM tool generates full code as needed).
 
 python-pptx uses inches (Inches). 16:9 canvas = 10 × 5.625".
 
@@ -278,7 +278,7 @@ Self-check every slide against these:
 - Height per line: `h_line = fs × ls / 72` (inches)
 - Max lines: `N_max = floor(h_body / h_line)`
 
-> Detailed capacity table in `reference.md` Section 5.
+> Detailed capacity table in the "Layout Dimensions" section below.
 
 ### 5.3 Page Layout Patterns
 
@@ -316,5 +316,4 @@ Common layout types. Colors and backgrounds are determined by Phase 2 — only s
 
 ## 7. References
 
-- `reference.md` — Complete helper function code, color methodology, typography ranges, layout dimensions, cd() capacity calculation
 - `SKILL.md` — Chinese version of this workflow

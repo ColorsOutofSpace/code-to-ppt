@@ -754,7 +754,6 @@ code-to-ppt/
 ├── SKILL.md                          # 本文件
 ├── SKILL_EN.md                       # 英文版 skill 文档
 ├── README.md                         # 项目介绍
-├── reference.md                      # Helper 函数参考 + 设计规范
 │
 ├── src/
 │   ├── interrogation_engine.py       # 拷打引擎
@@ -764,11 +763,6 @@ code-to-ppt/
 │   ├── layout_manager.py             # 自动布局分配
 │   ├── design_contract.py            # 长程一致性
 │   └── dual_track_api.py             # 声明式 + 精确控制 API
-│
-├── prompts/
-│   ├── content_parser.md             # 内容解析
-│   ├── pattern_recognizer.md         # 模式识别
-│   └── slide_mapper.md               # 页面映射
 │
 └── examples/                         # 示例（待补充）
 ```

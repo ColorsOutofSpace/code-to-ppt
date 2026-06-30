@@ -398,7 +398,6 @@ class PPTOrchestrator:
         }
         
         # 基于拷打结果生成幻灯片大纲
-        # 在实际实现中，这里会调用 slide_mapper
         plan["slides"] = self._generate_slide_outline(interrogation_summary)
         
         self.session.plan_document = plan
@@ -576,7 +575,7 @@ class PPTOrchestrator:
 4. 剩余空间分配
 
 ═══════════════════════════════════
-Helper 函数（参考 reference.md 第 1 节）
+Helper 函数（LLM 工具在生成的代码中实现）
 ═══════════════════════════════════
 - cd(sl, l, t, w, h, title, body, accent): 内容卡片
 - plot_card(sl, l, t, w, h, name, title, accent): 图片卡片

@@ -545,33 +545,3 @@ class SlideDeckWithContract:
         """获取完整的设计契约报告"""
         return self.contract.export_to_json()
 
-
-# 便捷函数
-def create_contract_from_mapper_output(mapper_output: Dict) -> DesignContract:
-    """
-    从 slide_mapper 的输出创建 DesignContract
-    
-    Args:
-        mapper_output: slide_mapper 的 JSON 输出
-    
-    Returns:
-        初始化好的 DesignContract
-    """
-    design = mapper_output.get("design_contract", {})
-    theme_str = mapper_output.get("deck_overview", {}).get("theme_suggestion", "academic")
-    theme = ThemeType(theme_str)
-    
-    contract = DesignContract(theme)
-    
-    # 应用 mapper 指定的色板
-    if "primary_color" in design:
-        contract.color_palette.primary = [design["primary_color"]]
-    if "secondary_colors" in design:
-        contract.color_palette.secondary = design["secondary_colors"]
-    if "semantic_colors" in design:
-        contract.color_palette.semantic = design["semantic_colors"]
-    if "fonts" in design:
-        contract.typography.chinese = design["fonts"].get("chinese", "Microsoft YaHei")
-        contract.typography.english = design["fonts"].get("english", "Arial")
-    
-    return contract

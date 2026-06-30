@@ -118,8 +118,6 @@ ctx = orch.start_interrogation(user_initial_input)
 
 在生成代码时，调 `orch.execute_slide(slide_config)` 拿到 `design_contract` 字段，**严格按该色板生成代码**。
 
-> 详细配色方法论和场景示例见 `reference.md` 第 2 节。
-
 ---
 
 ### Phase 3: 页面结构规划
@@ -139,7 +137,7 @@ ctx = orch.start_interrogation(user_initial_input)
 #### 4.1 搭建基础设施
 
 1. 根据 Phase 2 的色板，定义 `RGBColor` 颜色常量
-2. 从 `reference.md` 第 1 节复制完整的 helper 函数（`get_img_size`、`tx`、`cd`、`plot_card`、`img_fit`、`band`、`hero`、`ft`、`st`、`sT`、`cn`、`section_divider` 等）
+2. 在生成的 python-pptx 脚本中**自己实现** helper 函数（`tx`、`cd`、`plot_card`、`img_fit`、`band`、`hero`、`ft`、`st`、`sT` 等），LLM 工具按需生成
 3. 设置图片路径 `FIG` 和输出路径 `OUT`
 4. 修改 `ft()` 中的机构名称为 Phase 1 确认的值
 
@@ -177,7 +175,7 @@ ctx = orch.start_interrogation(user_initial_input)
 
 **实际渲染行数** = Σ ceil(该逻辑行的等效字符数 / 每行容纳中文字符数)，其中逻辑行 = `text.split('\n')`
 
-> 详细公式和常见卡片宽度的行数速查表见 `reference.md` 第 6 节「文本换行行数估算」。
+> 详细公式和常见卡片宽度的行数速查表见下文「文本换行行数估算」小节。
 
 **Step C: cd() 高度反推**
 
@@ -268,7 +266,7 @@ Report only problems found. Say "no problems" if clean.
 
 ## 4. 基础设施：Helper 函数体系
 
-> 完整代码见 `reference.md` 第 1 节。以下为速查表。
+> 以下为速查表（LLM 工具按需生成完整代码实现）。
 
 python-pptx 操作单位为英寸（Inches）。16:9 = 10 × 5.625"。
 
@@ -320,7 +318,7 @@ python-pptx 操作单位为英寸（Inches）。16:9 = 10 × 5.625"。
 - 每行占用高度：`h_line = fs × ls / 72`（英寸）
 - 最大可容纳行数：`N_max = floor(h_body / h_line)`
 
-> 详细容量对照表见 `reference.md` 第 5 节。
+> 详细容量对照表见下文「布局尺寸速查」小节。
 
 ### 5.3 页面布局模式
 
@@ -358,5 +356,4 @@ python-pptx 操作单位为英寸（Inches）。16:9 = 10 × 5.625"。
 
 ## 7. 参考资源
 
-- `reference.md` — 完整 helper 函数代码、配色方法论详解、排版层级参考、布局尺寸速查、cd() 容量计算
 - `SKILL_EN.md` — English version of this workflow
