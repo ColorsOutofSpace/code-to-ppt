@@ -53,4 +53,4 @@ skill 会带你走完整流程：需求访谈 → 叙事架构 → 视觉方案 
 
 ## 记忆
 
-如选择开启，LLM 会在 `~/.config/code-to-ppt/memory/{user_id}.md` 记录你的偏好。
+如选择开启，LLM 会在当前项目目录的 `.code-to-ppt/memory.md` 记录你的偏好。每个项目独立一份，自然隔离。
