@@ -45,10 +45,11 @@ skill 会带你走完整流程：需求访谈 → 叙事架构 → 视觉方案 
 ## 文件说明
 
 - `SKILL.md` — skill 主入口，LLM 据此执行全流程
-- `references/01_interrogation.md` — 认知访谈方法论
+- `references/01_interrogation.md` — 认知访谈 + 风险识别 + 挑战性问题
 - `references/02_visual_design.md` — 视觉设计系统
-- `references/03_adversarial_review.md` — 对抗审查
+- `references/03_adversarial_review.md` — 对抗审查（含可协商评分）
 - `references/04_reflection_loop.md` — 迭代循环
+- `references/05_customization.md` — 用户个性化审查标准协商与记忆管理
 
 ## 记忆
 
