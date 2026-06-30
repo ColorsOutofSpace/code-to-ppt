@@ -64,8 +64,9 @@ description: 帮助用户把想法变成高质量 PowerPoint。当用户提到 P
 
 ## 记忆规则
 - 只在用户明确同意后才保存记忆
-- 记忆文件是 Markdown，只记录用户确认过的偏好
+- 记忆文件是 Markdown，保存所有用户确认过的偏好（视觉、审查维度、历史反馈等）
 - 默认路径：`~/.config/code-to-ppt/memory/{user_id}.md`
+- **严格约束**：单个 memory 文件 ≤ 5KB，超过时必须按 `references/05_customization.md` 的压缩策略合并
 
 ## 工具使用
 - 用 python-pptx 生成 `.pptx`
