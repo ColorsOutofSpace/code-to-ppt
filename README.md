@@ -2,7 +2,7 @@
 
 # 🎨 code-to-ppt
 
-#### 把想法变成有说服力的演示文稿，不是把模板套到空页上
+#### 自主执行 + 独立 Agent 审查 + 顾问式立场的 PPT 制作 skill
 
 [![License](https://img.shields.io/badge/License-MIT-10B981?style=for-the-badge)](./LICENSE)
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
@@ -15,7 +15,24 @@
 
 </div>
 
-> **"你给方向，AI 设计；确认后 AI 自己完成所有工作，你只在结果上有否决权。"**
+---
+
+## 💎 这个 skill 的核心优势
+
+大多数 PPT skill 的流程是：套模板 → 一张张图堆出来 → 导出文件。**问题是被模板绑架**——最后得到的是"看起来还行但没有任何一个观点站得住"的 deck。
+
+code-to-ppt 走的是另一条路：
+
+| 维度 | 别的 PPT skill | code-to-ppt |
+|---|---|---|
+| **作者角色** | 套模板、套主题、套版式 | 从"想清楚说什么"开始 |
+| **审查机制** | 单 LLM 自审，倾向给自己高分 | **4 个独立 Agent 角色**隔离审查，避免 confirmation bias |
+| **AI 立场** | 用户说什么就做什么 | **顾问式立场**——主动发现风险、不迎合"想要"、只服务于"达成目标" |
+| **叙事结构** | 堆要点 | **金字塔原理**（结论先行 → 理由 → 证据） |
+| **视觉设计** | 套默认配色 | **内容驱动设计**——配色必须反映主题 |
+| **交互模式** | 每步要用户确认 | 阶段 1 深度参与，之后**自主执行**，你只在结果上有否决权 |
+| **评分标准** | 走形式 | **可协商量化评分** 0-100，用户可加自定义维度 |
+| **依赖** | Node.js / Python / 大量代码 | **零依赖**，纯 Markdown + YAML frontmatter |
 
 ---
 
@@ -32,40 +49,7 @@
 
 ---
 
-## 🤔 它和别的 PPT skill 有什么不同
-
-市面上大多数 PPT skill 的流程是这样的：
-
-```
-用户输入 → 大纲模板 → HTML/Marp 渲染 → 一张张图堆出来 → 导出 .pptx
-```
-
-这种流程有两个问题：
-- **作者被模板绑架**：要套主题、套版式、套动画，最后得到的是"看起来还行但没有任何一个观点站得住"的 deck
-- **审查走过场**：单 LLM 自审，倾向给自己高分，无法避免 confirmation bias
-
-code-to-ppt 走的是另一条路：
-
-```
-用户输入 → 深度认知访谈（5-12 个问题）→ 风险识别 + 挑战性问题
-       → 金字塔叙事架构（结论先行 → 理由 → 证据）
-       → 内容驱动视觉设计（配色 / 字体 / 母题）
-       → 自主实现（python-pptx 写代码生成）
-       → 4 个独立 Agent 审查（隔离 + 不给设计历史）
-       → 评审主席汇总 + 量化打分
-       → 自主迭代直到 ≥ 80 分
-```
-
-**核心卖点**：3 个
-- **顾问式立场**：主动发现风险、不迎合用户的"想要"，只服务于"达成目标"
-- **独立 Agent 审查**：4 个 LLM 角色在 prompt 层隔离，避免"换面具自审"
-- **可协商量化评分**：基线 4 维度（25×4=100），用户可加自定义维度，系统权重自动调整
-
----
-
 ## 🚀 平台兼容
-
-支持所有主流 Skill 标准的 Agent：
 
 | 工具 | 安装目录 | 安装命令 |
 |---|---|---|
@@ -142,11 +126,10 @@ code-to-ppt/
 - ✅ 答辩、汇报、融资、路演、季度总结
 - ✅ 5-30 页的正式演示文稿
 - ✅ 对内容逻辑和视觉一致性都有高要求
-- ✅ 想要"可上传到 GitHub、放进作品集"那种质量
+- ✅ 想要"可放进作品集"那种质量
 
 - ❌ 临时分享、3-5 页 quick update（太重）
-- ❌ 纯视觉炫技型（KPI 大屏、品牌发布）—— 用 `lewislulu/html-ppt-skill` 更合适
-- ❌ 图片型 slide（vibe PPT）—— 用 `codex-ppt-skill` 更合适
+- ❌ 纯视觉炫技型（KPI 大屏、品牌发布）
 
 ---
 
@@ -178,15 +161,6 @@ code-to-ppt/
 
 ### 5. 项目隔离
 每个项目独立一份 `.code-to-ppt/memory.md`，无需 user_id。**上下文窗口干净**。
-
----
-
-## 🔗 相关项目
-
-- [KKKKhazix/khazix-skills](https://github.com/KKKKhazix/khazix-skills) — 数字生命卡兹克的 AI Skills 合集
-- [lewislulu/html-ppt-skill](https://github.com/lewislulu/html-ppt-skill) — 36 套主题的 HTML PPT Studio
-- [codex-ppt-skill](https://github.com/ningzimu/codex-ppt-skill) — 整页图片式 PPT 生成
-- [Mr-Q526/PPTMaker-skill](https://github.com/Mr-Q526/PPTMaker-skill) — 结构化 deck.json 工作流
 
 ---
 
