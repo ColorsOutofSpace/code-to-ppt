@@ -282,18 +282,115 @@ class AdversarialReviewEngine:
             ReviewerType.EXECUTION: EXECUTION_REVIEWER_PROMPT,
         }
     
-    def review_plan(self, plan_document: Dict) -> AdversarialReviewResult:
+    def build_review_prompts(self, content: Dict, 
+                           review_type: str = "plan") -> Dict:
         """
-        审查计划文档
+        为对抗审查准备 LLM prompt 包。
         
-        Args:
-            plan_document: 计划管理器生成的计划 JSON
+        返回的不是"审查结果"，而是给 LLM 工具的指令：
+        - 三个 Agent 的 system_prompt（每个 Agent 独立审查维度）
+        - 三个 Agent 的 user_prompt（被审查的内容 + 审查类型）
+        - 独立性要求：每个 Agent 只能看到 content，看不到其他 Agent 的输出
+        
+        LLM 工具读 prompt 后：
+        1. 分别以三个 Agent 视角独立审查
+        2. 输出三个 ReviewReport JSON
+        3. 调用 aggregate_findings(reports) 聚合为 AdversarialReviewResult
         """
-        result = AdversarialReviewResult(review_type="plan")
+        # 构造 user prompt（包含被审查内容）
+        if review_type == "plan":
+            content_summary = f"""被审查对象: PPT 制作计划
+计划 ID: {content.get('plan_id', '?')}
+预计页数: {content.get('estimated_pages', '?')}
+预计时长: {content.get('estimated_duration_minutes', '?')} 分钟
+阶段: {len(content.get('phases', []))} 个
+幻灯片列表: {len(content.get('slides', []))} 页
+
+完整计划:
+{json.dumps(content, ensure_ascii=False, indent=2)[:3000]}
+
+请按你的角色（Creative/Logic/Execution）独立审查这份计划。"""
         
-        # 并行调用三个审查 Agent（实际实现中）
+        elif review_type == "checkpoint":
+            content_summary = f"""被审查对象: Checkpoint（最近生成的 {len(content) if isinstance(content, list) else '?'} 页）
+
+页面:
+{json.dumps(content, ensure_ascii=False, indent=2)[:3000]}
+
+请按你的角色审查这批页的一致性、节奏、明显错误。"""
+        
+        else:  # final
+            content_summary = f"""被审查对象: 完整 deck
+
+{json.dumps(content, ensure_ascii=False, indent=2)[:5000]}
+
+请按你的角色对完整 deck 做最终审查，重点关注：
+- 整体一致性
+- 故事线连贯
+- 视觉品质
+- 可交付性"""
+        
+        # 三个 Agent 的 prompt 包
+        agents = []
         for reviewer_type in ReviewerType:
-            report = self._run_reviewer(reviewer_type, plan_document, "plan")
+            system_prompt = self.prompts[reviewer_type]
+            agents.append({
+                "name": reviewer_type.value,
+                "system_prompt": system_prompt,
+                "user_prompt": content_summary,
+            })
+        
+        return {
+            "action": "multi_agent_review",
+            "review_type": review_type,
+            "agents": agents,
+            "independence_requirement": "每个 Agent 独立审查，只能看到 content，看不到其他 Agent 的输出。最后由 aggregate_findings() 汇总。",
+            "aggregation_strategy": "weighted_consensus",
+            "pass_threshold": self.pass_threshold,
+            "expected_output_per_agent": {
+                "score": 0.0-10.0,
+                "summary": "一句话总结",
+                "findings": [
+                    {
+                        "category": "...",
+                        "severity": "critical|high|medium|low|info",
+                        "issue": "...",
+                        "suggestion": "...",
+                        "affected_pages": [1, 2, ...],
+                        "confidence": 0.0-1.0,
+                    }
+                ],
+            },
+            "expected_output": "三个 ReviewReport JSON，由 aggregate_findings() 汇总",
+        }
+    
+    def aggregate_findings(self, reports: List[Dict]) -> AdversarialReviewResult:
+        """
+        LLM 工具执行 build_review_prompts 后，把三个 Agent 的输出（list of ReviewReport dict）传回，
+        本方法负责按严重性聚合、生成 action_items、判断是否通过。
+        """
+        result = AdversarialReviewResult(review_type="multi_agent")
+        
+        # 解析 LLM 传回的 reports（每个是 ReviewReport dict）
+        for report_data in reports:
+            reviewer_type = ReviewerType(report_data.get("reviewer", "creative"))
+            report = ReviewReport(
+                reviewer=reviewer_type,
+                score=report_data.get("score", 0.0),
+                summary=report_data.get("summary", ""),
+            )
+            for i, f in enumerate(report_data.get("findings", [])):
+                report.findings.append(ReviewFinding(
+                    finding_id=f.get("finding_id", f"f_{reviewer_type.value}_{i}"),
+                    reviewer=reviewer_type,
+                    severity=ReviewSeverity(f.get("severity", "medium")),
+                    category=f.get("category", ""),
+                    issue=f.get("issue", ""),
+                    evidence=f.get("evidence", ""),
+                    suggestion=f.get("suggestion", ""),
+                    affected_pages=f.get("affected_pages", []),
+                    confidence=f.get("confidence", 0.5),
+                ))
             result.reports.append(report)
         
         # 综合裁决
@@ -301,67 +398,45 @@ class AdversarialReviewEngine:
         
         return result
     
+    # ═══════════════════════════════════════════
+    # 【保留】旧 API（向后兼容但 deprecated）
+    # ═══════════════════════════════════════════
+    
+    def review_plan(self, plan_document: Dict) -> AdversarialReviewResult:
+        """
+        【DEPRECATED】旧的 plan 审查 API。
+        推荐用 build_review_prompts() + aggregate_findings() 工作流。
+        """
+        prompts = self.build_review_prompts(plan_document, "plan")
+        print(f"[DEPRECATED] review_plan() 已弃用。LLM 工具应读以下 prompt 包独立执行三个 Agent 审查：")
+        for agent in prompts["agents"]:
+            print(f"  - Agent: {agent['name']}, prompt 长度: {len(agent['system_prompt'])} 字符")
+        # 兼容 fallback：返回空 results
+        return AdversarialReviewResult(review_type="plan")
+    
     def review_checkpoint(self, slides_batch: List[Dict], 
                          checkpoint_number: int) -> AdversarialReviewResult:
-        """
-        Checkpoint 审查（每3页）
-        
-        Args:
-            slides_batch: 最近生成的3页
-            checkpoint_number: 第几个 checkpoint
-        """
-        result = AdversarialReviewResult(review_type="checkpoint")
-        
-        # Checkpoint 审查简化版：只检查一致性、节奏、明显错误
-        for reviewer_type in ReviewerType:
-            report = self._run_reviewer(reviewer_type, slides_batch, "checkpoint")
-            result.reports.append(report)
-        
-        self._consolidate(result)
-        
-        return result
+        """【DEPRECATED】"""
+        prompts = self.build_review_prompts(slides_batch, "checkpoint")
+        print(f"[DEPRECATED] review_checkpoint() 已弃用。LLM 工具应执行三个 Agent 审查。")
+        return AdversarialReviewResult(review_type="checkpoint")
     
     def review_final(self, full_deck: Dict) -> AdversarialReviewResult:
-        """
-        最终审查
-        
-        Args:
-            full_deck: 完整 deck 的所有信息
-        """
-        result = AdversarialReviewResult(review_type="final")
-        
-        for reviewer_type in ReviewerType:
-            report = self._run_reviewer(reviewer_type, full_deck, "final")
-            result.reports.append(report)
-        
-        self._consolidate(result)
-        
-        return result
+        """【DEPRECATED】"""
+        prompts = self.build_review_prompts(full_deck, "final")
+        print(f"[DEPRECATED] review_final() 已弃用。LLM 工具应执行三个 Agent 审查。")
+        return AdversarialReviewResult(review_type="final")
     
     def _run_reviewer(self, reviewer_type: ReviewerType, 
-                     content: Dict, review_type: str) -> ReviewReport:
+                     content: Dict, review_type: str) -> Dict:
         """
-        运行单个审查 Agent
-        
-        实际实现中，这里会调用 LLM API，传入 prompt 和 content
+        【保留作内部辅助】构造单个 Agent 的 prompt 字典（不调 LLM）。
         """
-        prompt = self.prompts[reviewer_type]
-        
-        # 模拟审查结果（实际应调用 LLM）
-        report = ReviewReport(reviewer=reviewer_type)
-        
-        # 根据审查类型调整评分逻辑
-        if review_type == "plan":
-            report.score = 7.5
-            report.summary = "计划合理，但有几处可优化"
-        elif review_type == "checkpoint":
-            report.score = 8.0
-            report.summary = "Checkpoint 通过，一致性良好"
-        else:  # final
-            report.score = 7.0
-            report.summary = "整体合格，有小问题需修复"
-        
-        return report
+        return {
+            "reviewer": reviewer_type.value,
+            "system_prompt": self.prompts[reviewer_type],
+            "user_prompt": json.dumps(content, ensure_ascii=False, indent=2)[:3000],
+        }
     
     def _consolidate(self, result: AdversarialReviewResult):
         """综合三方意见，生成最终裁决"""

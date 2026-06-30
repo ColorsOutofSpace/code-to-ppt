@@ -555,13 +555,29 @@ class InterrogationEngine:
         """识别 AI 做出的假设"""
         assumptions = []
         
+        # 从 self.results 提取关键信息
+        time_limit = 0
+        page_limit = 0
+        visual_reference = ""
+        for r in self.results:
+            if r.node_id == "time_limit":
+                m = re.search(r"(\d+)", r.answer)
+                if m:
+                    time_limit = int(m.group(1))
+            elif r.node_id == "page_limit":
+                m = re.search(r"(\d+)", r.answer)
+                if m:
+                    page_limit = int(m.group(1))
+            elif r.node_id == "visual_preference":
+                visual_reference = r.answer
+        
         # 假设 1：时间分配
-        if summary.time_limit_minutes > 0 and summary.page_limit == 0:
-            estimated_pages = summary.time_limit_minutes // 2  # 假设每页2分钟
+        if time_limit > 0 and page_limit == 0:
+            estimated_pages = time_limit // 2  # 假设每页2分钟
             assumptions.append(f"未明确页数限制，假设 {estimated_pages} 页（每页约2分钟）")
         
         # 假设 2：视觉风格
-        if not summary.visual_reference:
+        if not visual_reference:
             assumptions.append("未明确视觉参照，将基于用途和受众自动设计")
         
         return assumptions
@@ -668,22 +684,9 @@ def generate_interrogation_prompt(memory_context: Optional[Dict] = None) -> str:
     return prompt
 
 
-# 便捷函数
-def run_interrogation(user_input: str, memory: Optional[Dict] = None) -> InterrogationSummary:
-    """
-    运行完整拷打流程（供 orchestrator 调用）
-    
-    实际实现中，这个函数会：
-    1. 生成 prompt
-    2. 调用 LLM 进行多轮对话
-    3. 解析 LLM 输出为结构化结果
-    """
-    engine = InterrogationEngine(memory)
-    
-    # 在实际实现中，这里会调用 LLM API
-    # 简化版：直接返回结构
-    summary = InterrogationSummary()
-    summary.core_message = user_input  # 简化处理
-    summary.confidence_score = 0.5
-    
-    return summary
+# 注：原模块级 `run_interrogation` 函数（mock 实现）已删除。
+# 真实拷打流程请使用：
+#   1. PPTOrchestrator.start_interrogation(user_input) → 启动并返回第一个问题 prompt
+#   2. PPTOrchestrator.advance_interrogation(ctx, answer) → 推进决策树
+#   3. PPTOrchestrator.force_complete_interrogation(ctx) → 强制结束生成 summary
+# 旧 API 已不兼容。
