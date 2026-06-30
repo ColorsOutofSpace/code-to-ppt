@@ -1,6 +1,8 @@
 # code-to-ppt
 
-Claude Code 的 PPT 制作 skill，带完整的认知访谈、视觉设计、对抗审查和迭代流程。
+Claude Code / Codex / OpenCode 的 PPT 制作 skill。
+
+**核心特点**：确认需求后**自主执行**，4 个**独立 Agent 审查**（目标受众 / 挑剔设计师 / 逻辑审查者 / 时间管理者），**顾问式立场**（主动发现风险、不迎合用户），**可协商量化评分**（0-100），项目级记忆隔离（`.code-to-ppt/memory.md`）。
 
 ## 安装
 
