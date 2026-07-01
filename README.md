@@ -7,9 +7,7 @@
 [![License](https://img.shields.io/badge/License-MIT-10B981?style=for-the-badge)](./LICENSE)
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
 [![Platforms](https://img.shields.io/badge/Platforms-4-D97706?style=for-the-badge)](#-平台兼容)
-
 [![Linux.do](https://shorturl.at/ggSqS)](https://linux.do)
-
 ![Claude Code](https://img.shields.io/badge/Claude_Code-D97706?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-10B981?style=flat-square&logo=openai&logoColor=white)
 ![OpenCode](https://img.shields.io/badge/OpenCode-3B82F6?style=flat-square)
@@ -27,14 +25,12 @@ code-to-ppt 走的是另一条路：
 
 | 维度 | 别的 PPT skill | code-to-ppt |
 |---|---|---|
-| **作者角色** | 套模板、套主题、套版式 | 从"想清楚说什么"开始 |
-| **审查机制** | 单 LLM 自审，倾向给自己高分 | **4 个独立 Agent 角色**隔离审查，避免 confirmation bias |
-| **AI 立场** | 用户说什么就做什么 | **顾问式立场**——主动发现风险、不迎合"想要"、只服务于"达成目标" |
-| **叙事结构** | 堆要点 | **金字塔原理**（结论先行 → 理由 → 证据） |
-| **视觉设计** | 套默认配色 | **内容驱动设计**——配色必须反映主题 |
-| **交互模式** | 每步要用户确认 | 阶段 1 深度参与，之后**自主执行**，你只在结果上有否决权 |
-| **评分标准** | 走形式 | **可协商量化评分** 0-100，用户可加自定义维度 |
-| **依赖** | Node.js / Python / 大量代码 | **零依赖**，纯 Markdown + YAML frontmatter |
+| **不讨好用户** | 用户说什么就做什么 | 当用户的要求会让 PPT 变差时，主动提出异议 |
+| **去 AI 味** | 紫蓝渐变、emoji 满天飞、阴影玻璃滥用 | 明确禁止这些 AI 味设计 |
+| **零依赖** | Node.js / Python / 大量代码 | 纯 Markdown + YAML frontmatter，没有 Python 包 |
+| **自定义评分** | 固定 4 维度 | 基线 4 维度（25×4=100），用户可以加自定义维度 |
+| **辅助而非限制** | 框架约束模型发挥 | 没有用框架限制，而是为模型提供方法论 |
+| **开放不绑定** | 模板和设计写死 | 模板和设计都未写死，能和其他 skill 结合使用 |
 
 ---
 
@@ -163,6 +159,17 @@ code-to-ppt/
 
 ### 5. 项目隔离
 每个项目独立一份 `.code-to-ppt/memory.md`，无需 user_id。**上下文窗口干净**。
+
+---
+
+## 💡 解决什么痛点
+
+- 不想花时间做组会 / 报告 PPT
+- 担心数据安全（不上传第三方平台）
+- 纠结风格设计
+- 不清楚 PPT 该怎么做
+
+直接用这个 skill 搞定。
 
 ---
 
