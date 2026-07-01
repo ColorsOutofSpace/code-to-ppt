@@ -8,6 +8,8 @@
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
 [![Platforms](https://img.shields.io/badge/Platforms-4-D97706?style=for-the-badge)](#-平台兼容)
 
+[![Linux.do](https://img.shields.io/badge/LINUX-DO-FFB003?style=for-the-badge&logo=linux&logoColor=white&labelColor=black)](https://linux.do)
+
 ![Claude Code](https://img.shields.io/badge/Claude_Code-D97706?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-10B981?style=flat-square&logo=openai&logoColor=white)
 ![OpenCode](https://img.shields.io/badge/OpenCode-3B82F6?style=flat-square)
