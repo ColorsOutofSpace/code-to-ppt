@@ -28,3 +28,6 @@ $RECYCLE.BIN/
 
 # docs/ 整个目录都是本地对比实验产物，不提交 git
 docs/
+
+# assets/ 是本地素材/草图缓存，不入库
+assets/
